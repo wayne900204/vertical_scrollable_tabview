@@ -22,6 +22,7 @@ To use this widget we must first define how our tabs will look like.
 | `listItemData`| It must be List< dynamic > Type|
 | `eachItemChild`| A item child that in ListView.Builder, First parameter is an object that you put in listItemData, Second parameter is the index in ListView.Builder |
 | `verticalScrollPosition`| A Item Position |
+| `scrollDirection`| Your preferred scrollDirection |
 
 ## Example
 
@@ -39,6 +40,7 @@ To use this widget we must first define how our tabs will look like.
     VerticalScrollableTabView(
         tabController: tabController,                             <- Required TabBarController
         listItemData: data,                                       <- Required List<dynamic>
+        scrollDirection: Axis.horizontal or Axis.vertical,        <- Required Axis
         eachItemChild: (object,index){
             return CategorySection(category: object as Category); <- Object and index
         },
