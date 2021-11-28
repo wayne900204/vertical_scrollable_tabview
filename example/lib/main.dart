@@ -75,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage>
           listItemData: data,
           verticalScrollPosition: VerticalScrollPosition.middle,
           //Change this to your preferred scroll direction
-          scrollDirection: Axis.horizontal,
+          scrollDirection: Axis.vertical,
           eachItemChild: (object, index) =>
               CategorySection(category: object as Category)),
     );
