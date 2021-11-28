@@ -35,15 +35,17 @@ class VerticalScrollableTabView extends StatefulWidget {
   /// VerticalScrollPosition = is ann Animation style from scroll_to_index,
   /// It's show the item position in listView.builder
   final VerticalScrollPosition _verticalScrollPosition;
-
-  const VerticalScrollableTabView(
-      {required TabController tabController,
-      required List<dynamic> listItemData,
-      required Widget Function(dynamic aaa, int index) eachItemChild,
-      VerticalScrollPosition verticalScrollPosition =
-          VerticalScrollPosition.begin})
-      : _tabController = tabController,
+  final Axis _axisOrientation;
+  const VerticalScrollableTabView({
+    required TabController tabController,
+    required List<dynamic> listItemData,
+    required Axis scrollDirection,
+    required Widget Function(dynamic aaa, int index) eachItemChild,
+    VerticalScrollPosition verticalScrollPosition =
+        VerticalScrollPosition.begin,
+  })  : _tabController = tabController,
         _listItemData = listItemData,
+        _axisOrientation = scrollDirection,
         _eachItemChild = eachItemChild,
         _verticalScrollPosition = verticalScrollPosition;
 
@@ -106,6 +108,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     return ListView.builder(
       controller: scrollController,
       itemCount: widget._listItemData.length,
+      scrollDirection: widget._axisOrientation,
       itemBuilder: (BuildContext context, int index) {
         /// Initial Key of itemKeys
         /// 初始化 itemKeys 的 key
@@ -129,6 +132,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
       ),
     );
   }
+
   /// Animation Function for tabBarListener
   /// This need to put inside TabBar onTap, but in this case we put inside tabBarListener
   void animateAndScrollTo(int index) async {
@@ -158,15 +162,18 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
   /// true表示消費掉當前通知不再向上一级NotificationListener傳遞通知，false則會再向上一级NotificationListener傳遞通知；
   bool onScrollNotification(ScrollNotification notification) {
     if (pauseRectGetterIndex) return true;
+
     /// get tabBar index
     /// 取得 tabBar 的長度
     int lastTabIndex = widget._tabController.length - 1;
 
     List<int> visibleItems = getVisibleItemsIndex();
+
     /// define what is reachLastTabIndex
     bool reachLastTabIndex = visibleItems.isNotEmpty &&
         visibleItems.length <= 2 &&
         visibleItems.last == lastTabIndex;
+
     /// if reachLastTabIndex, then scroll to last index
     /// 如果到達最後一個 index 就跳轉到最後一個 index
     if (reachLastTabIndex) {
@@ -182,6 +189,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     }
     return false;
   }
+
   /// getVisibleItemsIndex on Screen
   /// 取得現在畫面上可以看得到的 Items Index
   List<int> getVisibleItemsIndex() {
@@ -189,6 +197,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     Rect? rect = RectGetter.getRectFromKey(listViewKey);
     List<int> items = [];
     if (rect == null) return items;
+    bool isHoriontalScroll = widget._axisOrientation == Axis.horizontal;
     itemsKeys.forEach((index, key) {
       Rect? itemRect = RectGetter.getRectFromKey(key);
       if (itemRect == null) return;
@@ -196,9 +205,19 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
       // 如果 item 上方的座標 比 listView 的下方的座標 的位置的大 代表不在畫面中。
       // bottom meaning => The offset of the bottom edge of this widget from the y axis.
       // top meaning => The offset of the top edge of this widget from the y axis.
-      if (itemRect.top > rect.bottom) return;
-      // 如果 item 下方的座標 比 listView 的上方的座標 的位置的小 代表不在畫面中。
-      if (itemRect.bottom < rect.top) return;
+      //Change offset based on AxisOrientation [horizontal] [vertical]
+      switch (isHoriontalScroll) {
+        case true:
+          if (itemRect.left > rect.right) return;
+          // 如果 item 下方的座標 比 listView 的上方的座標 的位置的小 代表不在畫面中。
+          if (itemRect.right < rect.left) return;
+          break;
+        default:
+          if (itemRect.top > rect.bottom) return;
+          // 如果 item 下方的座標 比 listView 的上方的座標 的位置的小 代表不在畫面中。
+          if (itemRect.bottom < rect.top) return;
+      }
+
       items.add(index);
     });
     return items;

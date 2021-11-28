@@ -30,8 +30,8 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
-
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
   final List<Category> data = ExampleData.data;
   // TabController More Information => https://api.flutter.dev/flutter/material/TabController-class.html
   late TabController tabController;
@@ -74,6 +74,8 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
           tabController: tabController,
           listItemData: data,
           verticalScrollPosition: VerticalScrollPosition.middle,
+          //Change this to your preferred scroll direction
+          scrollDirection: Axis.horizontal,
           eachItemChild: (object, index) =>
               CategorySection(category: object as Category)),
     );
