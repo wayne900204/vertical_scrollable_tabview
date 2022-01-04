@@ -1,3 +1,7 @@
+## 0.0.4
+
+* Support for Web Application
+
 ## 0.0.3
 
 * Support for Axis Orientation / ScrollDirection
