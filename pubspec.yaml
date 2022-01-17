@@ -1,6 +1,6 @@
 name: vertical_scrollable_tabview
 description: A Flutter widget which syncronize a ScrollView and a custom tab view.
-version: 0.0.4
+version: 0.0.5
 repository: https://github.com/wayne900204/vertical_scrollable_tabview
 issue_tracker: https://github.com/wayne900204/vertical_scrollable_tabview/issues
 homepage: https://github.com/wayne900204/vertical_scrollable_tabview
@@ -13,7 +13,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  scroll_to_index: ^2.1.0
+  scroll_to_index: ^2.1.1
   rect_getter: ^1.1.0
 dev_dependencies:
   flutter_test:

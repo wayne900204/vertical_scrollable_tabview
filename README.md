@@ -22,31 +22,38 @@ To use this widget we must first define how our tabs will look like.
 | `listItemData`| It must be List< dynamic > Type|
 | `eachItemChild`| A item child that in ListView.Builder, First parameter is an object that you put in listItemData, Second parameter is the index in ListView.Builder |
 | `verticalScrollPosition`| A Item Position |
-| `scrollDirection`| Your preferred scrollDirection |
+| `TabBar` | A TabBar, That required in slivers[SliverAppbar(bottom:TabBar())] |
 
 ## Example
 
     import 'package:vertical_scrollable_tabview/vertical_scrollable_tabview.dart';
     
-    // Required it
-    TabBar(
-        onTap: (index) {
-            VerticalScrollableTabBarStatus.setIndex(index); <- Required 
-        },
-    )
-    
-    and
-
     VerticalScrollableTabView(
-        tabController: tabController,                             <- Required TabBarController
-        listItemData: data,                                       <- Required List<dynamic>
-        scrollDirection: Axis.horizontal or Axis.vertical,        <- Required Axis
-        eachItemChild: (object,index){
-            return CategorySection(category: object as Category); <- Object and index
-        },
+        tabController: tabController,                           <- Required TabBarController
+        listItemData: data,<- Required List<dynamic>
         verticalScrollPosition: VerticalScrollPosition.begin,
-    ),
-
+        eachItemChild: (object, index) =>
+            CategorySection(category: object as Category),       <- Object and index
+        slivers: [                                               <- Required slivers 
+          SliverAppBar(                                          <- Required SliverAppBar 
+            bottom: TabBar(
+              isScrollable: true,
+              controller: tabController,
+              indicatorPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+              indicatorColor: Colors.cyan,
+              labelColor: Colors.cyan,
+              unselectedLabelColor: Colors.white,
+              indicatorWeight: 3.0,
+              tabs: data.map((e) {
+                return Tab(text: e.title);
+              }).toList(),
+              onTap: (index) {
+                VerticalScrollableTabBarStatus.setIndex(index);  <- Required
+              },
+            ),
+          ),
+        ],
+      ),
 
 
 ## Contribution

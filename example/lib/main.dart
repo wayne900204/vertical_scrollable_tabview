@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Vertical Scrollable TabView Demo',
         theme: ThemeData(
-          primarySwatch: Colors.purple,
+          primarySwatch: Colors.blue,
         ),
         home: MyHomePage(title: 'Vertical Scrollable TabView Plugin'));
   }
@@ -33,6 +33,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
   final List<Category> data = ExampleData.data;
+
   // TabController More Information => https://api.flutter.dev/flutter/material/TabController-class.html
   late TabController tabController;
 
@@ -52,32 +53,40 @@ class _MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(widget.title),
-        bottom: TabBar(
-          isScrollable: true,
-          controller: tabController,
-          indicatorPadding: EdgeInsets.symmetric(horizontal: 16.0),
-          indicatorColor: Colors.cyan,
-          labelColor: Colors.cyan,
-          unselectedLabelColor: Colors.white,
-          indicatorWeight: 3.0,
-          tabs: data.map((e) {
-            return Tab(text: e.title);
-          }).toList(),
-          onTap: (index) {
-            VerticalScrollableTabBarStatus.setIndex(index);
-          },
-        ),
-      ),
       body: VerticalScrollableTabView(
-          tabController: tabController,
-          listItemData: data,
-          verticalScrollPosition: VerticalScrollPosition.middle,
-          //Change this to your preferred scroll direction
-          scrollDirection: Axis.vertical,
-          eachItemChild: (object, index) =>
-              CategorySection(category: object as Category)),
+        tabController: tabController,
+        listItemData: data,
+        verticalScrollPosition: VerticalScrollPosition.begin,
+        eachItemChild: (object, index) =>
+            CategorySection(category: object as Category),
+        slivers: [
+          SliverAppBar(
+            pinned: true,
+            expandedHeight: 250.0,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text("SliverAppBar"),
+              titlePadding: EdgeInsets.only(bottom: 50),
+              collapseMode: CollapseMode.pin,
+              background: FlutterLogo(),
+            ),
+            bottom: TabBar(
+              isScrollable: true,
+              controller: tabController,
+              indicatorPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+              indicatorColor: Colors.cyan,
+              labelColor: Colors.cyan,
+              unselectedLabelColor: Colors.white,
+              indicatorWeight: 3.0,
+              tabs: data.map((e) {
+                return Tab(text: e.title);
+              }).toList(),
+              onTap: (index) {
+                VerticalScrollableTabBarStatus.setIndex(index);
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

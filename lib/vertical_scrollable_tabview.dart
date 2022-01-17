@@ -35,19 +35,29 @@ class VerticalScrollableTabView extends StatefulWidget {
   /// VerticalScrollPosition = is ann Animation style from scroll_to_index,
   /// It's show the item position in listView.builder
   final VerticalScrollPosition _verticalScrollPosition;
-  final Axis _axisOrientation;
-  const VerticalScrollableTabView({
-    required TabController tabController,
+
+  /// TODO Horizontal ScrollDirection
+  // final Axis _axisOrientation;
+
+  /// Required SliverAppBar, And TabBar must inside of SliverAppBar, and In the TabBar
+  /// onTap: (index) => VerticalScrollableTabBarStatus.setIndex(index);
+  final List<Widget> _slivers;
+
+  VerticalScrollableTabView({required TabController tabController,
     required List<dynamic> listItemData,
-    required Axis scrollDirection,
+    /// TODO Horizontal ScrollDirection
+    // required Axis scrollDirection,
     required Widget Function(dynamic aaa, int index) eachItemChild,
     VerticalScrollPosition verticalScrollPosition =
         VerticalScrollPosition.begin,
-  })  : _tabController = tabController,
+    required List<Widget> slivers,})
+      : _tabController = tabController,
         _listItemData = listItemData,
-        _axisOrientation = scrollDirection,
+        ///TODO Horizontal ScrollDirection
+        // _axisOrientation = scrollDirection,
         _eachItemChild = eachItemChild,
-        _verticalScrollPosition = verticalScrollPosition;
+        _verticalScrollPosition = verticalScrollPosition,
+        _slivers = slivers;
 
   @override
   _VerticalScrollableTabViewState createState() =>
@@ -58,7 +68,6 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     with SingleTickerProviderStateMixin {
   /// Instantiate scroll_to_index (套件提供的方法)
   late AutoScrollController scrollController;
-
   /// When the animation is started, need to pause onScrollNotification to calculate Rect
   /// 動畫的時候暫停去運算 Rect
   bool pauseRectGetterIndex = false;
@@ -86,7 +95,6 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
 
   @override
   void dispose() {
-    widget._tabController.dispose();
     scrollController.dispose();
     super.dispose();
   }
@@ -98,23 +106,43 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
       // NotificationListener 是一個由下往上傳遞通知，true 阻止通知、false 傳遞通知，確保指監聽滾動的通知
       // ScrollNotification => https://www.jianshu.com/p/d80545454944
       child: NotificationListener<ScrollNotification>(
-        child: buildScrollView(),
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: [
+            ...widget._slivers, buildVerticalSliverList()
+          ],
+        ),
         onNotification: onScrollNotification,
       ),
     );
   }
 
-  Widget buildScrollView() {
-    return ListView.builder(
-      controller: scrollController,
-      itemCount: widget._listItemData.length,
-      scrollDirection: widget._axisOrientation,
-      itemBuilder: (BuildContext context, int index) {
-        /// Initial Key of itemKeys
-        /// 初始化 itemKeys 的 key
-        itemsKeys[index] = RectGetter.createGlobalKey();
-        return buildItem(index);
-      },
+  /// TODO()  横向滑動區域
+  // Widget buildScrollView() {
+  //   return ListView.builder(
+  //     controller: widget._scrollController,
+  //     itemCount: widget._listItemData.length,
+  //     /// TODO Horizontal ScrollDirection
+  //     // scrollDirection: widget._axisOrientation,
+  //     itemBuilder: (BuildContext context, int index) {
+  //       /// Initial Key of itemKeys
+  //       /// 初始化 itemKeys 的 key
+  //       itemsKeys[index] = RectGetter.createGlobalKey();
+  //       return buildItem(index);
+  //     },
+  //   );
+  // }
+
+  SliverList buildVerticalSliverList() {
+    return SliverList(
+      delegate: SliverChildListDelegate(List.generate(
+        widget._listItemData.length,
+            (index) {
+          // 建立 itemKeys 的 Key
+          itemsKeys[index] = RectGetter.createGlobalKey();
+          return buildItem(index);
+        },
+      )),
     );
   }
 
@@ -162,7 +190,6 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
   /// true表示消費掉當前通知不再向上一级NotificationListener傳遞通知，false則會再向上一级NotificationListener傳遞通知；
   bool onScrollNotification(ScrollNotification notification) {
     if (pauseRectGetterIndex) return true;
-
     /// get tabBar index
     /// 取得 tabBar 的長度
     int lastTabIndex = widget._tabController.length - 1;
@@ -184,8 +211,8 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
       int sumIndex = visibleItems.reduce((value, element) => value + element);
       // 5 ~/ 2 = 2  => Result is an int 取整數
       int middleIndex = sumIndex ~/ visibleItems.length;
-      if (widget._tabController.index != middleIndex)
-        widget._tabController.animateTo(middleIndex);
+      if (widget._tabController.index != middleIndex){
+        widget._tabController.animateTo(middleIndex);}
     }
     return false;
   }
@@ -197,7 +224,9 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     Rect? rect = RectGetter.getRectFromKey(listViewKey);
     List<int> items = [];
     if (rect == null) return items;
-    bool isHoriontalScroll = widget._axisOrientation == Axis.horizontal;
+    /// TODO Horizontal ScrollDirection
+    // bool isHoriontalScroll = widget._axisOrientation == Axis.horizontal;
+    bool isHoriontalScroll = false;
     itemsKeys.forEach((index, key) {
       Rect? itemRect = RectGetter.getRectFromKey(key);
       if (itemRect == null) return;
