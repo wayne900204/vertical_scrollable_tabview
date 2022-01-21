@@ -3,6 +3,7 @@
 * Remove support for horizontal scroll direction
 * Change ListView to SliverAppBar
 * Add slivers parameters in CustomScrollView
+* Fixed the web'plugin bug
 
 ## 0.0.4
 
