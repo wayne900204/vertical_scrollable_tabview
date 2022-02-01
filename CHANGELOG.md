@@ -1,3 +1,7 @@
+## 0.0.6
+
+* Fixed web generated_plugin_registrant.dart bug
+
 ## 0.0.5
 
 * Remove support for horizontal scroll direction
