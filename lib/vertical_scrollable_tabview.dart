@@ -253,7 +253,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
               rect.top +
                   MediaQuery.of(context).viewPadding.top +
                   kToolbarHeight +
-                  AppBar().preferredSize.height) return;
+                  56) return;
       }
 
       items.add(index);
