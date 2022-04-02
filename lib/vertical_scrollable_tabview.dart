@@ -43,16 +43,19 @@ class VerticalScrollableTabView extends StatefulWidget {
   /// onTap: (index) => VerticalScrollableTabBarStatus.setIndex(index);
   final List<Widget> _slivers;
 
-  VerticalScrollableTabView({required TabController tabController,
+  VerticalScrollableTabView({
+    required TabController tabController,
     required List<dynamic> listItemData,
+
     /// TODO Horizontal ScrollDirection
     // required Axis scrollDirection,
     required Widget Function(dynamic aaa, int index) eachItemChild,
     VerticalScrollPosition verticalScrollPosition =
         VerticalScrollPosition.begin,
-    required List<Widget> slivers,})
-      : _tabController = tabController,
+    required List<Widget> slivers,
+  })  : _tabController = tabController,
         _listItemData = listItemData,
+
         ///TODO Horizontal ScrollDirection
         // _axisOrientation = scrollDirection,
         _eachItemChild = eachItemChild,
@@ -68,6 +71,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     with SingleTickerProviderStateMixin {
   /// Instantiate scroll_to_index (套件提供的方法)
   late AutoScrollController scrollController;
+
   /// When the animation is started, need to pause onScrollNotification to calculate Rect
   /// 動畫的時候暫停去運算 Rect
   bool pauseRectGetterIndex = false;
@@ -108,9 +112,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
       child: NotificationListener<ScrollNotification>(
         child: CustomScrollView(
           controller: scrollController,
-          slivers: [
-            ...widget._slivers, buildVerticalSliverList()
-          ],
+          slivers: [...widget._slivers, buildVerticalSliverList()],
         ),
         onNotification: onScrollNotification,
       ),
@@ -137,7 +139,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     return SliverList(
       delegate: SliverChildListDelegate(List.generate(
         widget._listItemData.length,
-            (index) {
+        (index) {
           // 建立 itemKeys 的 Key
           itemsKeys[index] = RectGetter.createGlobalKey();
           return buildItem(index);
@@ -189,31 +191,35 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
   /// onScrollNotification of NotificationListener
   /// true表示消費掉當前通知不再向上一级NotificationListener傳遞通知，false則會再向上一级NotificationListener傳遞通知；
   bool onScrollNotification(ScrollNotification notification) {
-    if (pauseRectGetterIndex) return true;
-    /// get tabBar index
-    /// 取得 tabBar 的長度
-    int lastTabIndex = widget._tabController.length - 1;
+    // if (pauseRectGetterIndex) return true;
 
+    // /// get tabBar index
+    // /// 取得 tabBar 的長度
+    // int lastTabIndex = widget._tabController.length - 1;
+
+    // List<int> visibleItems = getVisibleItemsIndex();
+
+    // /// define what is reachLastTabIndex
+    // bool reachLastTabIndex = visibleItems.isNotEmpty &&
+    //     visibleItems.length <= 2 &&
+    //     visibleItems.last == lastTabIndex;
+
+    // /// if reachLastTabIndex, then scroll to last index
+    // /// 如果到達最後一個 index 就跳轉到最後一個 index
+    // if (reachLastTabIndex) {
+    //   widget._tabController.animateTo(lastTabIndex);
+    // } else {
+    //   // 取得畫面中的 item 的中間值。例：2,3,4 中間的就是 3
+    //   // 求一個數字列表的乘積
+    //   int sumIndex = visibleItems.reduce((value, element) => value + element);
+    //   // 5 ~/ 2 = 2  => Result is an int 取整數
+    //   int middleIndex = sumIndex ~/ visibleItems.length;
+    //   if (widget._tabController.index != middleIndex) {
+    //     widget._tabController.animateTo(middleIndex);
+    //   }
+    // }
     List<int> visibleItems = getVisibleItemsIndex();
-
-    /// define what is reachLastTabIndex
-    bool reachLastTabIndex = visibleItems.isNotEmpty &&
-        visibleItems.length <= 2 &&
-        visibleItems.last == lastTabIndex;
-
-    /// if reachLastTabIndex, then scroll to last index
-    /// 如果到達最後一個 index 就跳轉到最後一個 index
-    if (reachLastTabIndex) {
-      widget._tabController.animateTo(lastTabIndex);
-    } else {
-      // 取得畫面中的 item 的中間值。例：2,3,4 中間的就是 3
-      // 求一個數字列表的乘積
-      int sumIndex = visibleItems.reduce((value, element) => value + element);
-      // 5 ~/ 2 = 2  => Result is an int 取整數
-      int middleIndex = sumIndex ~/ visibleItems.length;
-      if (widget._tabController.index != middleIndex){
-        widget._tabController.animateTo(middleIndex);}
-    }
+    widget._tabController.animateTo(visibleItems[0]);
     return false;
   }
 
@@ -224,6 +230,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     Rect? rect = RectGetter.getRectFromKey(listViewKey);
     List<int> items = [];
     if (rect == null) return items;
+
     /// TODO Horizontal ScrollDirection
     // bool isHoriontalScroll = widget._axisOrientation == Axis.horizontal;
     bool isHoriontalScroll = false;
@@ -244,7 +251,11 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
         default:
           if (itemRect.top > rect.bottom) return;
           // 如果 item 下方的座標 比 listView 的上方的座標 的位置的小 代表不在畫面中。
-          if (itemRect.bottom < rect.top) return;
+          if (itemRect.bottom <
+              rect.top +
+                  MediaQuery.of(context).viewPadding.top +
+                  kToolbarHeight +
+                  56) return;
       }
 
       items.add(index);
