@@ -191,33 +191,35 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
   /// onScrollNotification of NotificationListener
   /// true表示消費掉當前通知不再向上一级NotificationListener傳遞通知，false則會再向上一级NotificationListener傳遞通知；
   bool onScrollNotification(ScrollNotification notification) {
-    if (pauseRectGetterIndex) return true;
+    // if (pauseRectGetterIndex) return true;
 
-    /// get tabBar index
-    /// 取得 tabBar 的長度
-    int lastTabIndex = widget._tabController.length - 1;
+    // /// get tabBar index
+    // /// 取得 tabBar 的長度
+    // int lastTabIndex = widget._tabController.length - 1;
 
+    // List<int> visibleItems = getVisibleItemsIndex();
+
+    // /// define what is reachLastTabIndex
+    // bool reachLastTabIndex = visibleItems.isNotEmpty &&
+    //     visibleItems.length <= 2 &&
+    //     visibleItems.last == lastTabIndex;
+
+    // /// if reachLastTabIndex, then scroll to last index
+    // /// 如果到達最後一個 index 就跳轉到最後一個 index
+    // if (reachLastTabIndex) {
+    //   widget._tabController.animateTo(lastTabIndex);
+    // } else {
+    //   // 取得畫面中的 item 的中間值。例：2,3,4 中間的就是 3
+    //   // 求一個數字列表的乘積
+    //   int sumIndex = visibleItems.reduce((value, element) => value + element);
+    //   // 5 ~/ 2 = 2  => Result is an int 取整數
+    //   int middleIndex = sumIndex ~/ visibleItems.length;
+    //   if (widget._tabController.index != middleIndex) {
+    //     widget._tabController.animateTo(middleIndex);
+    //   }
+    // }
     List<int> visibleItems = getVisibleItemsIndex();
-
-    /// define what is reachLastTabIndex
-    bool reachLastTabIndex = visibleItems.isNotEmpty &&
-        visibleItems.length <= 2 &&
-        visibleItems.last == lastTabIndex;
-
-    /// if reachLastTabIndex, then scroll to last index
-    /// 如果到達最後一個 index 就跳轉到最後一個 index
-    if (reachLastTabIndex) {
-      widget._tabController.animateTo(lastTabIndex);
-    } else {
-      // 取得畫面中的 item 的中間值。例：2,3,4 中間的就是 3
-      // 求一個數字列表的乘積
-      int sumIndex = visibleItems.reduce((value, element) => value + element);
-      // 5 ~/ 2 = 2  => Result is an int 取整數
-      int middleIndex = sumIndex ~/ visibleItems.length;
-      if (widget._tabController.index != middleIndex) {
-        widget._tabController.animateTo(middleIndex);
-      }
-    }
+    widget._tabController.animateTo(visibleItems[0]);
     return false;
   }
 
