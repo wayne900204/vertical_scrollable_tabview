@@ -3,6 +3,7 @@ import 'package:vertical_scrollable_tabview/vertical_scrollable_tabview.dart';
 
 import 'category_section.dart';
 import 'example_data.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 void main() {
   runApp(MyApp());
@@ -36,11 +37,14 @@ class _MyHomePageState extends State<MyHomePage>
 
   // TabController More Information => https://api.flutter.dev/flutter/material/TabController-class.html
   late TabController tabController;
+  late AutoScrollController scrollController;
 
   @override
   void initState() {
     tabController = TabController(length: data.length, vsync: this);
     super.initState();
+
+    scrollController = AutoScrollController();
   }
 
   @override
@@ -55,6 +59,7 @@ class _MyHomePageState extends State<MyHomePage>
       backgroundColor: Colors.white,
       body: VerticalScrollableTabView(
         tabController: tabController,
+        scrollController: scrollController,
         listItemData: data,
         verticalScrollPosition: VerticalScrollPosition.begin,
         eachItemChild: (object, index) =>

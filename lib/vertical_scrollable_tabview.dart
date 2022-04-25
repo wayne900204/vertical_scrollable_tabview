@@ -38,15 +38,17 @@ class VerticalScrollableTabView extends StatefulWidget {
 
   /// TODO Horizontal ScrollDirection
   // final Axis _axisOrientation;
-
+  
   /// Required SliverAppBar, And TabBar must inside of SliverAppBar, and In the TabBar
   /// onTap: (index) => VerticalScrollableTabBarStatus.setIndex(index);
   final List<Widget> _slivers;
 
+  final AutoScrollController scrollController;
+  
   VerticalScrollableTabView({
     required TabController tabController,
     required List<dynamic> listItemData,
-
+    required AutoScrollController scrollController,
     /// TODO Horizontal ScrollDirection
     // required Axis scrollDirection,
     required Widget Function(dynamic aaa, int index) eachItemChild,
@@ -55,7 +57,7 @@ class VerticalScrollableTabView extends StatefulWidget {
     required List<Widget> slivers,
   })  : _tabController = tabController,
         _listItemData = listItemData,
-
+        scrollController = scrollController,
         ///TODO Horizontal ScrollDirection
         // _axisOrientation = scrollDirection,
         _eachItemChild = eachItemChild,
@@ -93,7 +95,8 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
         VerticalScrollableTabBarStatus.isOnTap = false;
       }
     });
-    scrollController = AutoScrollController();
+    scrollController = widget.scrollController;
+    
     super.initState();
   }
 
