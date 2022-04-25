@@ -49,28 +49,27 @@ class VerticalScrollableTabView extends StatefulWidget {
     required TabController tabController,
     required List<dynamic> listItemData,
     required AutoScrollController scrollController,
+
     /// TODO Horizontal ScrollDirection
     // required Axis scrollDirection,
     required Widget Function(dynamic aaa, int index) eachItemChild,
-    VerticalScrollPosition verticalScrollPosition =
-        VerticalScrollPosition.begin,
+    VerticalScrollPosition verticalScrollPosition = VerticalScrollPosition.begin,
     required List<Widget> slivers,
   })  : _tabController = tabController,
         _listItemData = listItemData,
         scrollController = scrollController,
-  ///TODO Horizontal ScrollDirection
-  // _axisOrientation = scrollDirection,
+
+        ///TODO Horizontal ScrollDirection
+        // _axisOrientation = scrollDirection,
         _eachItemChild = eachItemChild,
         _verticalScrollPosition = verticalScrollPosition,
         _slivers = slivers;
 
   @override
-  _VerticalScrollableTabViewState createState() =>
-      _VerticalScrollableTabViewState();
+  _VerticalScrollableTabViewState createState() => _VerticalScrollableTabViewState();
 }
 
-class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
-    with SingleTickerProviderStateMixin {
+class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView> with SingleTickerProviderStateMixin {
   /// Instantiate scroll_to_index (套件提供的方法)
   late AutoScrollController scrollController;
 
@@ -92,7 +91,9 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
       // https://stackoverflow.com/questions/60252355/tabcontroller-listener-called-multiple-times-how-does-indexischanging-work
       if (VerticalScrollableTabBarStatus.isOnTap) {
         animateAndScrollTo(VerticalScrollableTabBarStatus.isOnTapIndex);
-        VerticalScrollableTabBarStatus.isOnTap = false;
+        Future.delayed(Duration(seconds: 1), () {
+          VerticalScrollableTabBarStatus.isOnTap = false;
+        });
       }
     });
     scrollController = widget.scrollController;
@@ -142,7 +143,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     return SliverList(
       delegate: SliverChildListDelegate(List.generate(
         widget._listItemData.length,
-            (index) {
+        (index) {
           // 建立 itemKeys 的 Key
           itemsKeys[index] = RectGetter.createGlobalKey();
           return buildItem(index);
@@ -171,22 +172,16 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
   void animateAndScrollTo(int index) async {
     // Scroll 到 index 並使用 begin 的模式，結束後，把 pauseRectGetterIndex 設為 false 暫停執行 ScrollNotification
     pauseRectGetterIndex = true;
-    // widget._tabController.animateTo(index);
+    widget._tabController.animateTo(index);
     switch (widget._verticalScrollPosition) {
       case VerticalScrollPosition.begin:
-        scrollController
-            .scrollToIndex(index, preferPosition: AutoScrollPosition.begin)
-            .then((value) => pauseRectGetterIndex = false);
+        scrollController.scrollToIndex(index, preferPosition: AutoScrollPosition.begin).then((value) => pauseRectGetterIndex = false);
         break;
       case VerticalScrollPosition.middle:
-        scrollController
-            .scrollToIndex(index, preferPosition: AutoScrollPosition.middle)
-            .then((value) => pauseRectGetterIndex = false);
+        scrollController.scrollToIndex(index, preferPosition: AutoScrollPosition.middle).then((value) => pauseRectGetterIndex = false);
         break;
       case VerticalScrollPosition.end:
-        scrollController
-            .scrollToIndex(index, preferPosition: AutoScrollPosition.end)
-            .then((value) => pauseRectGetterIndex = false);
+        scrollController.scrollToIndex(index, preferPosition: AutoScrollPosition.end).then((value) => pauseRectGetterIndex = false);
         break;
     }
   }
@@ -222,8 +217,12 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     //   }
     // }
     List<int> visibleItems = getVisibleItemsIndex();
+
     /// Karan Changes New
-    // widget._tabController.animateTo(visibleItems[0]);
+    if (!VerticalScrollableTabBarStatus.isOnTap) {
+      widget._tabController.animateTo(visibleItems[0]);
+    }
+
     return false;
   }
 
@@ -255,11 +254,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
         default:
           if (itemRect.top > rect.bottom) return;
           // 如果 item 下方的座標 比 listView 的上方的座標 的位置的小 代表不在畫面中。
-          if (itemRect.bottom <
-              rect.top +
-                  MediaQuery.of(context).viewPadding.top +
-                  kToolbarHeight +
-                  56) return;
+          if (itemRect.bottom < rect.top + MediaQuery.of(context).viewPadding.top + kToolbarHeight + 80) return;
       }
 
       items.add(index);
