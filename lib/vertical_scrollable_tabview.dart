@@ -38,13 +38,13 @@ class VerticalScrollableTabView extends StatefulWidget {
 
   /// TODO Horizontal ScrollDirection
   // final Axis _axisOrientation;
-  
+
   /// Required SliverAppBar, And TabBar must inside of SliverAppBar, and In the TabBar
   /// onTap: (index) => VerticalScrollableTabBarStatus.setIndex(index);
   final List<Widget> _slivers;
 
   final AutoScrollController scrollController;
-  
+
   VerticalScrollableTabView({
     required TabController tabController,
     required List<dynamic> listItemData,
@@ -58,8 +58,8 @@ class VerticalScrollableTabView extends StatefulWidget {
   })  : _tabController = tabController,
         _listItemData = listItemData,
         scrollController = scrollController,
-        ///TODO Horizontal ScrollDirection
-        // _axisOrientation = scrollDirection,
+  ///TODO Horizontal ScrollDirection
+  // _axisOrientation = scrollDirection,
         _eachItemChild = eachItemChild,
         _verticalScrollPosition = verticalScrollPosition,
         _slivers = slivers;
@@ -96,7 +96,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
       }
     });
     scrollController = widget.scrollController;
-    
+
     super.initState();
   }
 
@@ -142,7 +142,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     return SliverList(
       delegate: SliverChildListDelegate(List.generate(
         widget._listItemData.length,
-        (index) {
+            (index) {
           // 建立 itemKeys 的 Key
           itemsKeys[index] = RectGetter.createGlobalKey();
           return buildItem(index);
@@ -171,7 +171,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
   void animateAndScrollTo(int index) async {
     // Scroll 到 index 並使用 begin 的模式，結束後，把 pauseRectGetterIndex 設為 false 暫停執行 ScrollNotification
     pauseRectGetterIndex = true;
-    widget._tabController.animateTo(index);
+    // widget._tabController.animateTo(index);
     switch (widget._verticalScrollPosition) {
       case VerticalScrollPosition.begin:
         scrollController
@@ -222,7 +222,8 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     //   }
     // }
     List<int> visibleItems = getVisibleItemsIndex();
-    widget._tabController.animateTo(visibleItems[0]);
+    /// Karan Changes New
+    // widget._tabController.animateTo(visibleItems[0]);
     return false;
   }
 
