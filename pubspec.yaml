@@ -13,7 +13,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  scroll_to_index: ^2.1.1
+  scroll_to_index: ^3.0.1
   rect_getter: ^1.1.0
   flutter_web_plugins:
     sdk: flutter
