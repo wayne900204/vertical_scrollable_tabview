@@ -43,18 +43,21 @@ class VerticalScrollableTabView extends StatefulWidget {
   /// onTap: (index) => VerticalScrollableTabBarStatus.setIndex(index);
   final List<Widget> _slivers;
 
+  final AutoScrollController scrollController;
+
   VerticalScrollableTabView({
     required TabController tabController,
     required List<dynamic> listItemData,
+    required AutoScrollController scrollController,
 
     /// TODO Horizontal ScrollDirection
     // required Axis scrollDirection,
     required Widget Function(dynamic aaa, int index) eachItemChild,
-    VerticalScrollPosition verticalScrollPosition =
-        VerticalScrollPosition.begin,
+    VerticalScrollPosition verticalScrollPosition = VerticalScrollPosition.begin,
     required List<Widget> slivers,
   })  : _tabController = tabController,
         _listItemData = listItemData,
+        scrollController = scrollController,
 
         ///TODO Horizontal ScrollDirection
         // _axisOrientation = scrollDirection,
@@ -63,12 +66,10 @@ class VerticalScrollableTabView extends StatefulWidget {
         _slivers = slivers;
 
   @override
-  _VerticalScrollableTabViewState createState() =>
-      _VerticalScrollableTabViewState();
+  _VerticalScrollableTabViewState createState() => _VerticalScrollableTabViewState();
 }
 
-class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
-    with SingleTickerProviderStateMixin {
+class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView> with SingleTickerProviderStateMixin {
   /// Instantiate scroll_to_index (套件提供的方法)
   late AutoScrollController scrollController;
 
@@ -90,10 +91,13 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
       // https://stackoverflow.com/questions/60252355/tabcontroller-listener-called-multiple-times-how-does-indexischanging-work
       if (VerticalScrollableTabBarStatus.isOnTap) {
         animateAndScrollTo(VerticalScrollableTabBarStatus.isOnTapIndex);
-        VerticalScrollableTabBarStatus.isOnTap = false;
+        Future.delayed(Duration(seconds: 1), () {
+          VerticalScrollableTabBarStatus.isOnTap = false;
+        });
       }
     });
-    scrollController = AutoScrollController();
+    scrollController = widget.scrollController;
+
     super.initState();
   }
 
@@ -171,19 +175,13 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     widget._tabController.animateTo(index);
     switch (widget._verticalScrollPosition) {
       case VerticalScrollPosition.begin:
-        scrollController
-            .scrollToIndex(index, preferPosition: AutoScrollPosition.begin)
-            .then((value) => pauseRectGetterIndex = false);
+        scrollController.scrollToIndex(index, preferPosition: AutoScrollPosition.begin).then((value) => pauseRectGetterIndex = false);
         break;
       case VerticalScrollPosition.middle:
-        scrollController
-            .scrollToIndex(index, preferPosition: AutoScrollPosition.middle)
-            .then((value) => pauseRectGetterIndex = false);
+        scrollController.scrollToIndex(index, preferPosition: AutoScrollPosition.middle).then((value) => pauseRectGetterIndex = false);
         break;
       case VerticalScrollPosition.end:
-        scrollController
-            .scrollToIndex(index, preferPosition: AutoScrollPosition.end)
-            .then((value) => pauseRectGetterIndex = false);
+        scrollController.scrollToIndex(index, preferPosition: AutoScrollPosition.end).then((value) => pauseRectGetterIndex = false);
         break;
     }
   }
@@ -219,7 +217,12 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     //   }
     // }
     List<int> visibleItems = getVisibleItemsIndex();
-    widget._tabController.animateTo(visibleItems[0]);
+
+    /// Karan Changes New
+    if (!VerticalScrollableTabBarStatus.isOnTap) {
+      widget._tabController.animateTo(visibleItems[0]);
+    }
+
     return false;
   }
 
@@ -251,11 +254,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
         default:
           if (itemRect.top > rect.bottom) return;
           // 如果 item 下方的座標 比 listView 的上方的座標 的位置的小 代表不在畫面中。
-          if (itemRect.bottom <
-              rect.top +
-                  MediaQuery.of(context).viewPadding.top +
-                  kToolbarHeight +
-                  56) return;
+          if (itemRect.bottom < rect.top + MediaQuery.of(context).viewPadding.top + kToolbarHeight + 80) return;
       }
 
       items.add(index);
