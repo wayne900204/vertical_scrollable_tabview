@@ -89,8 +89,8 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
       // will call two times, because 底層呼叫 2 次 notifyListeners()
       // https://stackoverflow.com/questions/60252355/tabcontroller-listener-called-multiple-times-how-does-indexischanging-work
       if (VerticalScrollableTabBarStatus.isOnTap) {
-        animateAndScrollTo(VerticalScrollableTabBarStatus.isOnTapIndex);
         VerticalScrollableTabBarStatus.isOnTap = false;
+        animateAndScrollTo(VerticalScrollableTabBarStatus.isOnTapIndex);
       }
     });
     scrollController = AutoScrollController();
