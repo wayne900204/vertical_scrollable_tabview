@@ -1,3 +1,9 @@
+## 0.0.8
+
+* fix call animateAndScrollTo method twice
+* remove redundant comment
+* upgrade flutter sdk (Flutter 3.0)
+
 ## 0.0.7
 
 * Fix the problem of the tabbar going to wrong position when clicked (thanks to [@mohamedalaaser](https://github.com/mohamedalaaser))

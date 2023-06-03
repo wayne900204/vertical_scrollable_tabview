@@ -86,8 +86,6 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
   @override
   void initState() {
     widget._tabController.addListener(() {
-      // will call two times, because 底層呼叫 2 次 notifyListeners()
-      // https://stackoverflow.com/questions/60252355/tabcontroller-listener-called-multiple-times-how-does-indexischanging-work
       if (VerticalScrollableTabBarStatus.isOnTap) {
         VerticalScrollableTabBarStatus.isOnTap = false;
         animateAndScrollTo(VerticalScrollableTabBarStatus.isOnTapIndex);
@@ -118,22 +116,6 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
       ),
     );
   }
-
-  /// TODO()  横向滑動區域
-  // Widget buildScrollView() {
-  //   return ListView.builder(
-  //     controller: widget._scrollController,
-  //     itemCount: widget._listItemData.length,
-  //     /// TODO Horizontal ScrollDirection
-  //     // scrollDirection: widget._axisOrientation,
-  //     itemBuilder: (BuildContext context, int index) {
-  //       /// Initial Key of itemKeys
-  //       /// 初始化 itemKeys 的 key
-  //       itemsKeys[index] = RectGetter.createGlobalKey();
-  //       return buildItem(index);
-  //     },
-  //   );
-  // }
 
   SliverList buildVerticalSliverList() {
     return SliverList(
@@ -191,33 +173,6 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
   /// onScrollNotification of NotificationListener
   /// true表示消費掉當前通知不再向上一级NotificationListener傳遞通知，false則會再向上一级NotificationListener傳遞通知；
   bool onScrollNotification(ScrollNotification notification) {
-    // if (pauseRectGetterIndex) return true;
-
-    // /// get tabBar index
-    // /// 取得 tabBar 的長度
-    // int lastTabIndex = widget._tabController.length - 1;
-
-    // List<int> visibleItems = getVisibleItemsIndex();
-
-    // /// define what is reachLastTabIndex
-    // bool reachLastTabIndex = visibleItems.isNotEmpty &&
-    //     visibleItems.length <= 2 &&
-    //     visibleItems.last == lastTabIndex;
-
-    // /// if reachLastTabIndex, then scroll to last index
-    // /// 如果到達最後一個 index 就跳轉到最後一個 index
-    // if (reachLastTabIndex) {
-    //   widget._tabController.animateTo(lastTabIndex);
-    // } else {
-    //   // 取得畫面中的 item 的中間值。例：2,3,4 中間的就是 3
-    //   // 求一個數字列表的乘積
-    //   int sumIndex = visibleItems.reduce((value, element) => value + element);
-    //   // 5 ~/ 2 = 2  => Result is an int 取整數
-    //   int middleIndex = sumIndex ~/ visibleItems.length;
-    //   if (widget._tabController.index != middleIndex) {
-    //     widget._tabController.animateTo(middleIndex);
-    //   }
-    // }
     List<int> visibleItems = getVisibleItemsIndex();
     widget._tabController.animateTo(visibleItems[0]);
     return false;
@@ -232,8 +187,8 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     if (rect == null) return items;
 
     /// TODO Horizontal ScrollDirection
-    // bool isHoriontalScroll = widget._axisOrientation == Axis.horizontal;
-    bool isHoriontalScroll = false;
+    // bool isHorizontalScroll = widget._axisOrientation == Axis.horizontal;
+    bool isHorizontalScroll = false;
     itemsKeys.forEach((index, key) {
       Rect? itemRect = RectGetter.getRectFromKey(key);
       if (itemRect == null) return;
@@ -242,7 +197,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
       // bottom meaning => The offset of the bottom edge of this widget from the y axis.
       // top meaning => The offset of the top edge of this widget from the y axis.
       //Change offset based on AxisOrientation [horizontal] [vertical]
-      switch (isHoriontalScroll) {
+      switch (isHorizontalScroll) {
         case true:
           if (itemRect.left > rect.right) return;
           // 如果 item 下方的座標 比 listView 的上方的座標 的位置的小 代表不在畫面中。
@@ -262,4 +217,6 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     });
     return items;
   }
+
+/// TODO()  横向滑動區域 horizontal sliding area
 }
