@@ -56,8 +56,8 @@ class VerticalScrollableTabView extends StatefulWidget {
   })  : _tabController = tabController,
         _listItemData = listItemData,
 
-        ///TODO Horizontal ScrollDirection
-        // _axisOrientation = scrollDirection,
+  ///TODO Horizontal ScrollDirection
+  // _axisOrientation = scrollDirection,
         _eachItemChild = eachItemChild,
         _verticalScrollPosition = verticalScrollPosition,
         _slivers = slivers;
@@ -121,7 +121,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     return SliverList(
       delegate: SliverChildListDelegate(List.generate(
         widget._listItemData.length,
-        (index) {
+            (index) {
           // 建立 itemKeys 的 Key
           itemsKeys[index] = RectGetter.createGlobalKey();
           return buildItem(index);
@@ -148,24 +148,19 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
   /// Animation Function for tabBarListener
   /// This need to put inside TabBar onTap, but in this case we put inside tabBarListener
   void animateAndScrollTo(int index) async {
-    // Scroll 到 index 並使用 begin 的模式，結束後，把 pauseRectGetterIndex 設為 false 暫停執行 ScrollNotification
-    pauseRectGetterIndex = true;
     widget._tabController.animateTo(index);
     switch (widget._verticalScrollPosition) {
       case VerticalScrollPosition.begin:
-        scrollController
-            .scrollToIndex(index, preferPosition: AutoScrollPosition.begin)
-            .then((value) => pauseRectGetterIndex = false);
+        scrollController.scrollToIndex(index,
+            preferPosition: AutoScrollPosition.begin);
         break;
       case VerticalScrollPosition.middle:
-        scrollController
-            .scrollToIndex(index, preferPosition: AutoScrollPosition.middle)
-            .then((value) => pauseRectGetterIndex = false);
+        scrollController.scrollToIndex(index,
+            preferPosition: AutoScrollPosition.middle);
         break;
       case VerticalScrollPosition.end:
-        scrollController
-            .scrollToIndex(index, preferPosition: AutoScrollPosition.end)
-            .then((value) => pauseRectGetterIndex = false);
+        scrollController.scrollToIndex(index,
+            preferPosition: AutoScrollPosition.end);
         break;
     }
   }
@@ -174,7 +169,13 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
   /// true表示消費掉當前通知不再向上一级NotificationListener傳遞通知，false則會再向上一级NotificationListener傳遞通知；
   bool onScrollNotification(ScrollNotification notification) {
     List<int> visibleItems = getVisibleItemsIndex();
-    widget._tabController.animateTo(visibleItems[0]);
+    if (widget._listItemData.length - visibleItems.length <= visibleItems[0]) {
+      widget._tabController
+          .animateTo(VerticalScrollableTabBarStatus.isOnTapIndex);
+      print(widget._listItemData.length - visibleItems.length);
+    } else {
+      widget._tabController.animateTo(visibleItems[0]);
+    }
     return false;
   }
 
@@ -187,7 +188,6 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     if (rect == null) return items;
 
     /// TODO Horizontal ScrollDirection
-    // bool isHorizontalScroll = widget._axisOrientation == Axis.horizontal;
     bool isHorizontalScroll = false;
     itemsKeys.forEach((index, key) {
       Rect? itemRect = RectGetter.getRectFromKey(key);
@@ -203,7 +203,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
           // 如果 item 下方的座標 比 listView 的上方的座標 的位置的小 代表不在畫面中。
           if (itemRect.right < rect.left) return;
           break;
-        default:
+        case false:
           if (itemRect.top > rect.bottom) return;
           // 如果 item 下方的座標 比 listView 的上方的座標 的位置的小 代表不在畫面中。
           if (itemRect.bottom <
@@ -211,12 +211,11 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
                   MediaQuery.of(context).viewPadding.top +
                   kToolbarHeight +
                   56) return;
+          break;
       }
 
       items.add(index);
     });
     return items;
   }
-
-/// TODO()  横向滑動區域 horizontal sliding area
 }
