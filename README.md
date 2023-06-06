@@ -41,9 +41,6 @@ you need to implement `TabController` and `AutoScrollController`
 | `scrollbarNotificationPredicate` | notificationPredicate  |
 | `scrollInteractive` | interactive  |
 | `scrollbarOrientation` | scrollbarOrientation  |
-| `scrollbarIsAlwaysShown` | isAlwaysShown|
-| `scrollbarShowTrackOnHover` | showTrackOnHover  |
-| `scrollHoverThickness` | hoverThickness  |
 
 #### Copy parameters from CustomScrollView
 |Parameter| Definition ( parameter from CustomScrollView )|

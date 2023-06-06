@@ -44,7 +44,6 @@ class VerticalScrollableTabView extends StatefulWidget {
   final AutoScrollController _autoScrollController;
 
   /// Copy Scrollbar
-  final bool? _isAlwaysShown;
   final bool? _thumbVisibility;
   final bool? _trackVisibility;
   final double? _thickness;
@@ -52,8 +51,6 @@ class VerticalScrollableTabView extends StatefulWidget {
   final bool Function(ScrollNotification)? _notificationPredicate;
   final bool? _interactive;
   final ScrollbarOrientation? _scrollbarOrientation;
-  final bool? _showTrackOnHover;
-  final double? _hoverThickness;
 
   /// Copy CustomScrollView parameters
   final Axis _scrollDirection;
@@ -90,9 +87,6 @@ class VerticalScrollableTabView extends StatefulWidget {
     bool Function(ScrollNotification)? scrollbarNotificationPredicate,
     bool? scrollInteractive,
     ScrollbarOrientation? scrollbarOrientation,
-    bool? scrollbarIsAlwaysShown,
-    bool? scrollbarShowTrackOnHover,
-    double? scrollHoverThickness,
 
     /// Copy CustomScrollView parameters
     Axis scrollDirection = Axis.vertical,
@@ -125,9 +119,6 @@ class VerticalScrollableTabView extends StatefulWidget {
         _notificationPredicate = scrollbarNotificationPredicate,
         _interactive = scrollInteractive,
         _scrollbarOrientation = scrollbarOrientation,
-        _isAlwaysShown = scrollbarIsAlwaysShown,
-        _showTrackOnHover = scrollbarShowTrackOnHover,
-        _hoverThickness = scrollHoverThickness,
 
         /// CustomScrollView
         _scrollDirection = scrollDirection,
@@ -195,9 +186,6 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
           notificationPredicate: widget._notificationPredicate,
           interactive: widget._interactive,
           scrollbarOrientation: widget._scrollbarOrientation,
-          isAlwaysShown: widget._isAlwaysShown,
-          showTrackOnHover: widget._showTrackOnHover,
-          hoverThickness: widget._hoverThickness,
           child: CustomScrollView(
             scrollDirection: widget._scrollDirection,
             reverse: widget._reverse,

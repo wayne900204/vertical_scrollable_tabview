@@ -1,3 +1,9 @@
+## 0.0.9
+
+* fix the bug when tap tab_bar item from index 0 to index 1, the indicator comes and go
+* exposes Scrollbar and CustomScrollView parameters to VerticalScrollableTabView
+* make the code more beautiful
+
 ## 0.0.8
 
 * fix call animateAndScrollTo method twice (thanks to [@sejun2](https://github.com/sejun2))

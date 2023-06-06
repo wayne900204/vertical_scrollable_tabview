@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage>
       backgroundColor: Colors.white,
       body: VerticalScrollableTabView(
         autoScrollController: autoScrollController,
-        scrollbarIsAlwaysShown: false,
+        scrollbarThumbVisibility: false,
         tabController: tabController,
         listItemData: data,
         verticalScrollPosition: VerticalScrollPosition.begin,
