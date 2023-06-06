@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:vertical_scrollable_tabview/vertical_scrollable_tabview.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 import 'category_section.dart';
 import 'example_data.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -18,16 +19,16 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: MyHomePage(title: 'Vertical Scrollable TabView Plugin'));
+        home: const MyHomePage(title: 'Vertical Scrollable TabView Plugin'));
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage>
@@ -37,15 +38,20 @@ class _MyHomePageState extends State<MyHomePage>
   // TabController More Information => https://api.flutter.dev/flutter/material/TabController-class.html
   late TabController tabController;
 
+  // Instantiate scroll_to_index (套件提供的方法)
+  late AutoScrollController autoScrollController;
+
   @override
   void initState() {
     tabController = TabController(length: data.length, vsync: this);
+    autoScrollController = AutoScrollController();
     super.initState();
   }
 
   @override
   void dispose() {
     tabController.dispose();
+    autoScrollController.dispose();
     super.dispose();
   }
 
@@ -54,6 +60,8 @@ class _MyHomePageState extends State<MyHomePage>
     return Scaffold(
       backgroundColor: Colors.white,
       body: VerticalScrollableTabView(
+        autoScrollController: autoScrollController,
+        scrollbarIsAlwaysShown: false,
         tabController: tabController,
         listItemData: data,
         verticalScrollPosition: VerticalScrollPosition.begin,
@@ -63,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage>
           SliverAppBar(
             pinned: true,
             expandedHeight: 250.0,
-            flexibleSpace: FlexibleSpaceBar(
+            flexibleSpace: const FlexibleSpaceBar(
               title: Text("SliverAppBar"),
               titlePadding: EdgeInsets.only(bottom: 50),
               collapseMode: CollapseMode.pin,

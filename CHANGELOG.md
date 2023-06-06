@@ -1,6 +1,6 @@
 ## 0.0.8
 
-* fix call animateAndScrollTo method twice
+* fix call animateAndScrollTo method twice (thanks to [@sejun2](https://github.com/sejun2))
 * remove redundant comment
 * upgrade flutter sdk (Flutter 3.0)
 
@@ -32,4 +32,5 @@
 * Change documentation
 
 ## 0.0.1
+
 * TODO: Initial Release

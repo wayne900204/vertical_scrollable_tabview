@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:rect_getter/rect_getter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -36,40 +37,123 @@ class VerticalScrollableTabView extends StatefulWidget {
   /// It's show the item position in listView.builder
   final VerticalScrollPosition _verticalScrollPosition;
 
-  /// TODO Horizontal ScrollDirection
-  // final Axis _axisOrientation;
-
   /// Required SliverAppBar, And TabBar must inside of SliverAppBar, and In the TabBar
   /// onTap: (index) => VerticalScrollableTabBarStatus.setIndex(index);
   final List<Widget> _slivers;
 
-  VerticalScrollableTabView({
+  final AutoScrollController _autoScrollController;
+
+  /// Copy Scrollbar
+  final bool? _isAlwaysShown;
+  final bool? _thumbVisibility;
+  final bool? _trackVisibility;
+  final double? _thickness;
+  final Radius? _radius;
+  final bool Function(ScrollNotification)? _notificationPredicate;
+  final bool? _interactive;
+  final ScrollbarOrientation? _scrollbarOrientation;
+  final bool? _showTrackOnHover;
+  final double? _hoverThickness;
+
+  /// Copy CustomScrollView parameters
+  final Axis _scrollDirection;
+  final bool _reverse;
+  final bool? _primary;
+  final ScrollPhysics? _physics;
+  final ScrollBehavior? _scrollBehavior;
+  final bool _shrinkWrap;
+  final Key? _center;
+  final double _anchor;
+  final double? _cacheExtent;
+  final int? _semanticChildCount;
+  final DragStartBehavior _dragStartBehavior;
+  final ScrollViewKeyboardDismissBehavior _keyboardDismissBehavior;
+  final String? _restorationId;
+  final Clip _clipBehavior;
+
+  const VerticalScrollableTabView({
+    Key? key,
+
+    /// Custom parameters
+    required AutoScrollController autoScrollController,
     required TabController tabController,
     required List<dynamic> listItemData,
-
-    /// TODO Horizontal ScrollDirection
-    // required Axis scrollDirection,
     required Widget Function(dynamic aaa, int index) eachItemChild,
     VerticalScrollPosition verticalScrollPosition =
         VerticalScrollPosition.begin,
+
+    /// Copy Scrollbar
+    bool? scrollbarThumbVisibility,
+    bool? scrollbarTrackVisibility,
+    double? scrollbarThickness,
+    Radius? scrollbarRadius,
+    bool Function(ScrollNotification)? scrollbarNotificationPredicate,
+    bool? scrollInteractive,
+    ScrollbarOrientation? scrollbarOrientation,
+    bool? scrollbarIsAlwaysShown,
+    bool? scrollbarShowTrackOnHover,
+    double? scrollHoverThickness,
+
+    /// Copy CustomScrollView parameters
+    Axis scrollDirection = Axis.vertical,
+    bool reverse = false,
+    bool? primary,
+    ScrollPhysics? physics,
+    ScrollBehavior? scrollBehavior,
+    bool shrinkWrap = false,
+    Key? center,
+    double anchor = 0.0,
+    double? cacheExtent,
     required List<Widget> slivers,
+    int? semanticChildCount,
+    DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+    ScrollViewKeyboardDismissBehavior keyboardDismissBehavior =
+        ScrollViewKeyboardDismissBehavior.manual,
+    String? restorationId,
+    Clip clipBehavior = Clip.hardEdge,
   })  : _tabController = tabController,
         _listItemData = listItemData,
-
         _eachItemChild = eachItemChild,
         _verticalScrollPosition = verticalScrollPosition,
-        _slivers = slivers;
+        _autoScrollController = autoScrollController,
+
+        /// Scrollbar
+        _thumbVisibility = scrollbarThumbVisibility,
+        _trackVisibility = scrollbarTrackVisibility,
+        _thickness = scrollbarThickness,
+        _radius = scrollbarRadius,
+        _notificationPredicate = scrollbarNotificationPredicate,
+        _interactive = scrollInteractive,
+        _scrollbarOrientation = scrollbarOrientation,
+        _isAlwaysShown = scrollbarIsAlwaysShown,
+        _showTrackOnHover = scrollbarShowTrackOnHover,
+        _hoverThickness = scrollHoverThickness,
+
+        /// CustomScrollView
+        _scrollDirection = scrollDirection,
+        _reverse = reverse,
+        _primary = primary,
+        _physics = physics,
+        _scrollBehavior = scrollBehavior,
+        _shrinkWrap = shrinkWrap,
+        _center = center,
+        _anchor = anchor,
+        _cacheExtent = cacheExtent,
+        _slivers = slivers,
+        _semanticChildCount = semanticChildCount,
+        _dragStartBehavior = dragStartBehavior,
+        _keyboardDismissBehavior = keyboardDismissBehavior,
+        _restorationId = restorationId,
+        _clipBehavior = clipBehavior,
+        super(key: key);
 
   @override
-  _VerticalScrollableTabViewState createState() =>
+  State<VerticalScrollableTabView> createState() =>
       _VerticalScrollableTabViewState();
 }
 
 class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     with SingleTickerProviderStateMixin {
-  /// Instantiate scroll_to_index (套件提供的方法)
-  late AutoScrollController scrollController;
-
   /// Instantiate RectGetter（套件提供的方法）
   final listViewKey = RectGetter.createGlobalKey();
 
@@ -85,13 +169,12 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
         animateAndScrollTo(VerticalScrollableTabBarStatus.isOnTapIndex);
       }
     });
-    scrollController = AutoScrollController();
     super.initState();
   }
 
   @override
   void dispose() {
-    scrollController.dispose();
+    widget._tabController.dispose();
     super.dispose();
   }
 
@@ -99,13 +182,41 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
   Widget build(BuildContext context) {
     return RectGetter(
       key: listViewKey,
-      // UserScrollNotification => https://api.flutter.dev/flutter/widgets/UserScrollNotification-class.html
+      // NotificationListener 是一個由下往上傳遞通知，true 阻止通知、false 傳遞通知，確保指監聽滾動的通知
+      // ScrollNotification => https://www.jianshu.com/p/d80545454944
       child: NotificationListener<UserScrollNotification>(
-        child: CustomScrollView(
-          controller: scrollController,
-          slivers: [...widget._slivers, buildVerticalSliverList()],
-        ),
         onNotification: onScrollNotification,
+        child: Scrollbar(
+          controller: widget._autoScrollController,
+          thumbVisibility: widget._thumbVisibility,
+          trackVisibility: widget._trackVisibility,
+          thickness: widget._thickness,
+          radius: widget._radius,
+          notificationPredicate: widget._notificationPredicate,
+          interactive: widget._interactive,
+          scrollbarOrientation: widget._scrollbarOrientation,
+          isAlwaysShown: widget._isAlwaysShown,
+          showTrackOnHover: widget._showTrackOnHover,
+          hoverThickness: widget._hoverThickness,
+          child: CustomScrollView(
+            scrollDirection: widget._scrollDirection,
+            reverse: widget._reverse,
+            controller: widget._autoScrollController,
+            primary: widget._primary,
+            physics: widget._physics,
+            scrollBehavior: widget._scrollBehavior,
+            shrinkWrap: widget._shrinkWrap,
+            center: widget._center,
+            anchor: widget._anchor,
+            cacheExtent: widget._cacheExtent,
+            slivers: [...widget._slivers, buildVerticalSliverList()],
+            semanticChildCount: widget._semanticChildCount,
+            dragStartBehavior: widget._dragStartBehavior,
+            keyboardDismissBehavior: widget._keyboardDismissBehavior,
+            restorationId: widget._restorationId,
+            clipBehavior: widget._clipBehavior,
+          ),
+        ),
       ),
     );
   }
@@ -114,7 +225,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     return SliverList(
       delegate: SliverChildListDelegate(List.generate(
         widget._listItemData.length,
-            (index) {
+        (index) {
           // 建立 itemKeys 的 Key
           itemsKeys[index] = RectGetter.createGlobalKey();
           return buildItem(index);
@@ -132,7 +243,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
       child: AutoScrollTag(
         key: ValueKey(index),
         index: index,
-        controller: scrollController,
+        controller: widget._autoScrollController,
         child: widget._eachItemChild(category, index),
       ),
     );
@@ -144,16 +255,16 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     widget._tabController.animateTo(index);
     switch (widget._verticalScrollPosition) {
       case VerticalScrollPosition.begin:
-        scrollController.scrollToIndex(index,
-            preferPosition: AutoScrollPosition.begin);
+        widget._autoScrollController
+            .scrollToIndex(index, preferPosition: AutoScrollPosition.begin);
         break;
       case VerticalScrollPosition.middle:
-        scrollController.scrollToIndex(index,
-            preferPosition: AutoScrollPosition.middle);
+        widget._autoScrollController
+            .scrollToIndex(index, preferPosition: AutoScrollPosition.middle);
         break;
       case VerticalScrollPosition.end:
-        scrollController.scrollToIndex(index,
-            preferPosition: AutoScrollPosition.end);
+        widget._autoScrollController
+            .scrollToIndex(index, preferPosition: AutoScrollPosition.end);
         break;
     }
   }
@@ -162,7 +273,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
   /// true表示消費掉當前通知不再向上一级NotificationListener傳遞通知，false則會再向上一级NotificationListener傳遞通知；
   bool onScrollNotification(UserScrollNotification notification) {
     List<int> visibleItems = getVisibleItemsIndex();
-      widget._tabController.animateTo(visibleItems[0]);
+    widget._tabController.animateTo(visibleItems[0]);
     return false;
   }
 
@@ -174,8 +285,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     List<int> items = [];
     if (rect == null) return items;
 
-    /// TODO Horizontal ScrollDirection
-    bool isHorizontalScroll = false;
+    bool isHorizontalScroll = widget._scrollDirection == Axis.horizontal;
     itemsKeys.forEach((index, key) {
       Rect? itemRect = RectGetter.getRectFromKey(key);
       if (itemRect == null) return;

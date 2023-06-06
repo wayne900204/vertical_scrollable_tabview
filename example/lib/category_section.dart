@@ -113,7 +113,7 @@ class CategorySection extends StatelessWidget {
         Row(
           children: [
             Text(
-              "特價" + food.price + " ",
+              "特價${food.price} ",
               style: _textTheme(context).caption,
             ),
             Text(
@@ -131,7 +131,7 @@ class CategorySection extends StatelessWidget {
   Widget _buildSectionHoteSaleIcon() {
     return Container(
       margin: const EdgeInsets.only(right: 4.0),
-      child: Icon(
+      child: const Icon(
         Icons.whatshot,
         color: Colors.pink,
         size: 20.0,
@@ -141,12 +141,12 @@ class CategorySection extends StatelessWidget {
 
   Widget _buildFoodHotSaleIcon() {
     return Container(
-      child: Icon(Icons.whatshot, color: Colors.pink, size: 16.0),
       padding: const EdgeInsets.all(4.0),
       decoration: BoxDecoration(
         color: Colors.pink.withOpacity(0.1),
         borderRadius: BorderRadius.circular(16.0),
       ),
+      child: const Icon(Icons.whatshot, color: Colors.pink, size: 16.0),
     );
   }
 

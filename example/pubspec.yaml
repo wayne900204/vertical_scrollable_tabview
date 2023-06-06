@@ -5,11 +5,12 @@ description: Demonstrates how to use the vertical_scrollable_tabview plugin.
 # pub.dev using `pub publish`. This is preferred for private packages.
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.12.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  scroll_to_index: ^3.0.1
   vertical_scrollable_tabview:
     # When depending on this package from a real application you should use:
     #   vertical_scrollable_tabview: ^x.y.z
@@ -20,9 +21,10 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.5
 
 dev_dependencies:
+  flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
 
