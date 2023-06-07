@@ -14,7 +14,7 @@ Add dependency for package on your pubspec.yaml:
 
     dependencies:
 	    vertical_scrollable_tabview: <latest>
-        scroll_to_index<latest>
+        scroll_to_index: <latest>
 
 ## Usage
 To use this widget we must first define how our tabs will look like.
@@ -93,7 +93,7 @@ you need to implement `TabController` and `AutoScrollController`
         ],
       ),
 
-
+for full example, please see this [Demo](https://github.com/wayne900204/vertical_scrollable_tabview/blob/main/example/lib/main.dart).
 ## Contribution
 Contributions are accepted via pull requests. For more information about how to contribute to this package, please check the [contribution guide](https://github.com/wayne900204/vertical_scrollable_tabview/blob/main/CONTRIBUTION.md).
 
