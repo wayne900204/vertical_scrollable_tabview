@@ -21,15 +21,3 @@ dev_dependencies:
   flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
-
-flutter:
-  plugin:
-    platforms:
-      android:
-        package: com.example.vertical_scrollable_tabview
-        pluginClass: VerticalScrollableTabviewPlugin
-      ios:
-        pluginClass: VerticalScrollableTabviewPlugin
-      web:
-        pluginClass: VerticalScrollableTabviewWeb
-        fileName: vertical_scrollable_tabview_web.dart
