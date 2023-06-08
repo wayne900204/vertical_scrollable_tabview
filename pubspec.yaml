@@ -7,8 +7,8 @@ homepage: https://github.com/wayne900204/vertical_scrollable_tabview
 documentation: https://github.com/wayne900204/vertical_scrollable_tabview/blob/master/README.md
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=3.0.0"
+  sdk: '>=3.0.3 <4.0.0'
+  flutter: ">=3.3.0"
 
 dependencies:
   flutter:
