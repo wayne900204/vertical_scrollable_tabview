@@ -1,3 +1,7 @@
+## 0.1.0
+
+* update dart sdk: '>=3.0.3 <4.0.0' and flutter: ">=3.3.0"
+
 ## 0.0.9
 
 * fix the bug when tap tab_bar item from index 0 to index 1, the indicator comes and go
@@ -12,7 +16,8 @@
 
 ## 0.0.7
 
-* Fix the problem of the tabbar going to wrong position when clicked (thanks to [@mohamedalaaser](https://github.com/mohamedalaaser))
+* Fix the problem of the tabbar going to wrong position when clicked (thanks
+  to [@mohamedalaaser](https://github.com/mohamedalaaser))
 
 ## 0.0.6
 
