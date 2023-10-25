@@ -154,18 +154,14 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
 
   @override
   void initState() {
-    widget._tabController.addListener(() {
-      if (VerticalScrollableTabBarStatus.isOnTap) {
-        VerticalScrollableTabBarStatus.isOnTap = false;
-        animateAndScrollTo(VerticalScrollableTabBarStatus.isOnTapIndex);
-      }
-    });
+    widget._tabController.addListener(_handleTabControllerTick);
     super.initState();
   }
 
   @override
   void dispose() {
-    widget._tabController.dispose();
+    widget._tabController.removeListener(_handleTabControllerTick);
+    // We don't own the _tabController, so it's not disposed here.
     super.dispose();
   }
 
@@ -301,5 +297,12 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
       items.add(index);
     });
     return items;
+  }
+
+  void _handleTabControllerTick() {
+    if (VerticalScrollableTabBarStatus.isOnTap) {
+      VerticalScrollableTabBarStatus.isOnTap = false;
+      animateAndScrollTo(VerticalScrollableTabBarStatus.isOnTapIndex);
+    }
   }
 }
