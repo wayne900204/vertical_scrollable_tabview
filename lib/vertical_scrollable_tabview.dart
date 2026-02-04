@@ -43,6 +43,10 @@ class VerticalScrollableTabView extends StatefulWidget {
 
   final AutoScrollController _autoScrollController;
 
+  /// Height of the pinned header (used for scroll calculations)
+  /// If not provided, defaults to viewPadding.top + kToolbarHeight + 56
+  final double? _pinnedHeaderHeight;
+
   /// Copy Scrollbar
   final bool? _thumbVisibility;
   final bool? _trackVisibility;
@@ -78,6 +82,7 @@ class VerticalScrollableTabView extends StatefulWidget {
     required Widget Function(dynamic aaa, int index) eachItemChild,
     VerticalScrollPosition verticalScrollPosition =
         VerticalScrollPosition.begin,
+    double? pinnedHeaderHeight,
 
     /// Copy Scrollbar
     bool? scrollbarThumbVisibility,
@@ -110,6 +115,7 @@ class VerticalScrollableTabView extends StatefulWidget {
         _eachItemChild = eachItemChild,
         _verticalScrollPosition = verticalScrollPosition,
         _autoScrollController = autoScrollController,
+        _pinnedHeaderHeight = pinnedHeaderHeight,
 
         /// Scrollbar
         _thumbVisibility = scrollbarThumbVisibility,
@@ -270,6 +276,8 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     if (rect == null) return items;
 
     bool isHorizontalScroll = widget._scrollDirection == Axis.horizontal;
+    final headerOffset = widget._pinnedHeaderHeight ??
+        (MediaQuery.of(context).viewPadding.top + kToolbarHeight + 56);
     itemsKeys.forEach((index, key) {
       Rect? itemRect = RectGetter.getRectFromKey(key);
       if (itemRect == null) return;
@@ -286,11 +294,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
         case false:
           if (itemRect.top > rect.bottom) return;
           // 如果 item 下方的座標 比 listView 的上方的座標 的位置的小 代表不在畫面中。
-          if (itemRect.bottom <
-              rect.top +
-                  MediaQuery.of(context).viewPadding.top +
-                  kToolbarHeight +
-                  56) return;
+          if (itemRect.bottom < rect.top + headerOffset) return;
           break;
       }
 
