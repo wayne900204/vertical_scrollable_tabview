@@ -25,8 +25,8 @@ class VerticalScrollableTabView extends StatefulWidget {
   /// TabBar Controller 用來讓 widget 監聽 TabBar 的 index 是否有更動
   final TabController _tabController;
 
-  /// Required a List<dynamic> Type，you can put your data that you wanna put in item
-  /// 要求 List<dynamic> 的結構，List 裡面可以放自己建立的 Object
+  /// Required a `List<dynamic>` Type，you can put your data that you wanna put in item
+  /// 要求 `List<dynamic>` 的結構，List 裡面可以放自己建立的 Object
   final List<dynamic> _listItemData;
 
   /// A callback that return an Object inside _listItemData and the index of ListView.Builder

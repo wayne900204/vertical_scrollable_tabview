@@ -1,3 +1,7 @@
+## 0.1.2
+
+* add pinned header height parameter(thanks to [@utsav-savani](https://github.com/utsav-savani))
+
 ## 0.1.0
 
 * update dart sdk: '>=3.0.3 <4.0.0' and flutter: ">=3.3.0"

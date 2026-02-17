@@ -61,7 +61,7 @@ class CategorySection extends StatelessWidget {
         if (category.isHotSale) _buildSectionHoteSaleIcon(),
         Text(
           category.title,
-          style: _textTheme(context).headline6,
+          style: _textTheme(context).titleLarge,
         )
       ],
     );
@@ -70,7 +70,7 @@ class CategorySection extends StatelessWidget {
   Widget _sectionSubtitle(BuildContext context) {
     return Text(
       category.subtitle!,
-      style: _textTheme(context).subtitle2,
+      style: _textTheme(context).titleSmall,
     );
   }
 
@@ -108,17 +108,17 @@ class CategorySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(food.name, style: _textTheme(context).subtitle1),
+        Text(food.name, style: _textTheme(context).titleMedium),
         const SizedBox(height: 16),
         Row(
           children: [
             Text(
               "特價${food.price} ",
-              style: _textTheme(context).caption,
+              style: _textTheme(context).bodySmall,
             ),
             Text(
               food.comparePrice,
-              style: _textTheme(context).caption?.copyWith(decoration: TextDecoration.lineThrough),
+              style: _textTheme(context).bodySmall?.copyWith(decoration: TextDecoration.lineThrough),
             ),
             const SizedBox(width: 8.0),
             if (food.isHotSale) _buildFoodHotSaleIcon(),
@@ -143,7 +143,7 @@ class CategorySection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4.0),
       decoration: BoxDecoration(
-        color: Colors.pink.withOpacity(0.1),
+        color: Colors.pink..withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: const Icon(Icons.whatshot, color: Colors.pink, size: 16.0),
